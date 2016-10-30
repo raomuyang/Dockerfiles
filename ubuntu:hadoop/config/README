@@ -1,0 +1,7 @@
+配置文件中准备了三种情况的启动方式：
+单机模式   伪分布式   分布式
+
+启动： bash start.sh  [default|pseudo|distributed|stop]
+
+使用真分布式方式启动时，需要确认配置文件是否正确，确定Master和Slave是否可以通过ssh连接，
+以及slaves列表配置
