@@ -3,7 +3,7 @@
 # Create_Date: 2016/10/28
 base_dir=$(dirname $0)
 
-if [ ! $# = 1 ]
+if [ $# = 0 ]
 then
   echo "[ERROR] 请输入要启动的形式  [ default | pseudo | distributed | stop ]"
   exit
@@ -18,13 +18,23 @@ then
   exit
 fi
 
-if [ x$1 = x"default" ] | [ x$1 = x"pseudo" ] | [ x$1 = x"distributed" ]
+if [ x$1 = x"default" ] || [ x$1 = x"pseudo" ] || [ x$1 = x"distributed" ]
 then
+
   /etc/init.d/ssh start
   cp $base_dir/hadoop-env.sh $HADOOP_HOME/etc/hadoop/
   echo "[INFO] "$1"形式启动Hadoop"
   cp $base_dir/$1/* $HADOOP_HOME/etc/hadoop/
 
+
+  # DEFAULT
+  if [ x$1 = x"default" ]
+  then
+    echo "[FINISH]"
+    exit
+  fi
+
+  # PSEUDO
   if [ x$1 = x"pseudo" ]
   then
 
@@ -34,8 +44,13 @@ then
     stop-dfs.sh
 
     echo "[INFO] 伪分布式环境: http://localhost:50070"
-    hadoop namenode -format
-    echo "[INFO] Second time needn't format namenode"
+    if [ x$2 = x"f" ]
+    then
+      echo "[INFO] Format: Second time needn't format namenode"
+      hadoop namenode -format
+    fi
+
+
     start-dfs.sh
     # hdfs dfs -mkdir -p /user/hadoop
     # cd /user/hadoop
@@ -53,6 +68,8 @@ then
     echo "[MESSAGE] 不启用 YARN 时，是 “mapred.LocalJobRunner” 在运行任务，"\
          "          启用 YARN 之后，是 “mapred.YARNRunner” 在运行任务。启动 YARN 后可以通过" \
          "          Web 界面查看任务的运行情况：http://localhost:8088/cluster"
+    echo "[FINISH]"
+    exit
   fi
 
   if [ x$1 = x"distributed" ]
@@ -71,8 +88,11 @@ then
     rm -r ./tmp     # 删除 Hadoop 临时文件
     rm -r ./logs/*   # 删除日志文件
 
-    echo "[INFO] Fromat: Second time needn't format namenode"
-    hadoop namenode -format
+    if [ x$2 = x"f" ]
+    then
+      echo "[INFO] Fromat: Second time needn't format namenode"
+      hadoop namenode -format
+    fi
 
     echo "[INFO] Start service in Master"
     start-dfs.sh
@@ -84,7 +104,12 @@ then
     echo "[MESSAGE] Stop Hadoop: stop-dfs.sh"
     echo "[MESSAGE] Stop YARN: stop-yarn.sh && mr-jobhistory-daemon.sh stop historyserver"
 
+    echo "[FINISH]"
+    exit
   fi
-  echo "[FINISH]"
+
+else
+  echo "[ERROR] $1 请输入要启动的形式  [ default | pseudo | distributed | stop ]"
   exit
 fi
+  #statements
