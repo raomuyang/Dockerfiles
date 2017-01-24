@@ -26,7 +26,6 @@ then
   echo "[INFO] "$1"形式启动Hadoop"
   cp $base_dir/$1/* $HADOOP_HOME/etc/hadoop/
 
-
   # DEFAULT
   if [ x$1 = x"default" ]
   then
@@ -77,6 +76,13 @@ then
     echo "[INFO] 分布式环境"
     echo "[INFO] 请确定ssh、host及hadoop的配置正确后启动服务，DataNode 的主机名写入slaves文件。"\
          "       YOU SHOULD MAKE SURE CONFIGURED CORRECTLY BEFORE START SERVICE BEFORE"
+
+    echo "[INFO] 复制配置文件到SLAVES"
+    cat $base_dir/distributed/slaves | while read line; do
+      echo "[MESSAGE] 复制到"$line
+      scp $base_dir/hadoop-env.sh  $line:$HADOOP_HOME/etc/hadoop/
+      scp $base_dir/distributed/*  $line:$HADOOP_HOME/etc/hadoop/
+    done
 
     # 关闭当前已经打开的服务
     mr-jobhistory-daemon.sh stop historyserver
