@@ -3,7 +3,11 @@
 WFP='Workflow-Engine-Provider'
 WFS='Workflow-Engine-Service'
 
+root=$(pwd)
 cd $WF_ENGINE_HOME
+if [ x = x$WF_ENGINE_HOME ];then
+	cd $root
+fi
 
 COMMAND=$1
 if [ x$COMMAND = x'--run' ] || [ x$COMMAND = x'-r' ] || [ x$COMMAND = $'-run' ];then
@@ -24,7 +28,7 @@ if [ x$COMMAND = x'--run' ] || [ x$COMMAND = x'-r' ] || [ x$COMMAND = $'-run' ];
 	
         rm $P'.jar' -f
         cd $P
-	
+		
         jar cvfm0 ../$P.jar META-INF/MANIFEST.MF .
         cd ..
         java -jar $P'.jar'
