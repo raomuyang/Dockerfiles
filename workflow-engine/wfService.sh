@@ -58,7 +58,7 @@ function execute(){
 
     echo "[USE HOST_IP] "$IP
     cp /etc/hosts /etc/hosts.t
-    sed -i 's/.*'$(hostname)'/'$(IP)'    '`hostname`'\n/g' /etc/hosts.t
+    sed -i 's/.*'$(hostname)'/'$IP'    '`hostname`'\n/g' /etc/hosts.t
     cat /etc/hosts.t > /etc/hosts
 
   fi
