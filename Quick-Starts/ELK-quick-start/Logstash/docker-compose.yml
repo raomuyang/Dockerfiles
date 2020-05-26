@@ -1,0 +1,21 @@
+version: '2'
+services:
+  logstash:
+    image: logstash:5.6
+    container_name: logstash
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - "5044:5044"
+      - "4560:4560"
+      - "8080:8080"
+    volumes:
+      - /home/bio-data/LogAnalysisRoot:/data/logs
+      - ./conf:/config-dir
+      - ./patterns:/opt/logstash/patterns
+    extra_hosts:
+       - "elasticsearch:192.168.1.103"
+#    external_links: 
+#    如果部署在同一台机器上，可以使用external_link
+#      - elasticsearch:elasticsearch
+    command: logstash -f /config-dir
