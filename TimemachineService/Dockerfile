@@ -32,3 +32,6 @@ COPY init-user.sh /usr/local/bin/init-user
 RUN chmod a+x /usr/local/bin/init-user
 
 CMD netatalk && init-user && avahi-daemon --no-rlimits 
+
+ENV AFP_USER changeme
+ENV AFP_PASSWD changeme
